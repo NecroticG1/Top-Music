@@ -171,18 +171,25 @@ function updateVolumeIcon() {
 
 // Función para cargar y reproducir una canción
 function loadAndPlay(src, title, artist, cover, index) {
-  if (currentSrc !== src) {
-    mainSource.src = src;
-    audio.load();
-    currentSrc = src;
-    currentIndex = index;
-    currentTitle.innerText = title;
-    currentArtist.innerText = artist; // Actualizar el artista
-    currentCover.src = cover; // Actualizar la portada
-  }
-  audio.play();
-  updatePlayPauseButton();
+    if (currentSrc !== src) {
+        mainSource.src = src;
+        audio.load();
+        currentSrc = src;
+        currentIndex = index;
+        currentTitle.innerText = title;
+        currentArtist.innerText = artist;
+        currentCover.src = cover;
+    }
+    
+    // Llama a play()...
+    audio.play().catch(e => {
+        console.error("Error de reproducción en loadAndPlay:", e);
+    });
+    
+    // ...PERO ELIMINA LA LLAMADA MANUAL A updatePlayPauseButton() de aquí:
+    // updatePlayPauseButton(); // <-- COMENTAR O ELIMINAR ESTA LÍNEA
 }
+
 
 // Inicializar botones y añadir event listeners a las tarjetas de canciones
 playButtons.forEach((button, index) => {
@@ -262,12 +269,62 @@ function playRandomSong() {
 }
 
 // Eventos de los botones de control
-btnPlayPause.addEventListener('click', () => {
-    if (audio.src) {
-      if (audio.paused) audio.play(); else audio.pause();
+btnPlayPause.type = 'button';
+btnPlayPause.style.zIndex = '1000';
+
+// Función que alterna reproducir/pausar (la usamos en varios handlers)
+function togglePlayPause() {
+    if (!audio.src) return; // No hay audio cargado → no hace nada
+
+    if (audio.paused) {
+        audio.play().catch(err => console.error('[ERROR] Reproducir:', err));
+    } else {
+        audio.pause();
     }
-    updatePlayPauseButton();
+}
+
+
+// Actualizar el botón principal Play/Pause según el estado del audio
+function updatePlayPauseButton() {
+    if (audio.paused) {
+        btnPlayPause.innerHTML = '▶️';
+        btnPlayPause.setAttribute('aria-label', 'Reproducir (Barra Espaciadora)');
+    } else {
+        btnPlayPause.innerHTML = '⏸️';
+        btnPlayPause.setAttribute('aria-label', 'Pausar (Barra Espaciadora)');
+    }
+}
+
+// ------------------------
+// LISTENERS
+// ------------------------
+
+// Click en el botón Play/Pause
+btnPlayPause.addEventListener('click', (e) => {
+    e.stopPropagation();
+    togglePlayPause();
 });
+
+// Barra espaciadora para reproducir/pausar
+window.addEventListener('keydown', (e) => {
+    // Evitar que afecte a inputs, sliders, textarea
+    if (['INPUT','TEXTAREA','RANGE'].includes(document.activeElement.tagName)) return;
+
+    if (e.code === 'Space') {
+        e.preventDefault();
+        togglePlayPause();
+    }
+});
+
+// Actualizar botón cuando cambie el estado del audio
+audio.addEventListener('play', updatePlayPauseButton);
+audio.addEventListener('pause', updatePlayPauseButton);
+
+// Inicializar estado del botón al cargar la página
+updatePlayPauseButton();
+// Eventos para actualizar los botones al reproducir/pausar
+audio.addEventListener('play', updatePlayPauseButton);
+audio.addEventListener('pause', updatePlayPauseButton);
 
 btnPrev.addEventListener('click', playPrevSong);
 btnNext.addEventListener('click', playNextSong);
@@ -283,10 +340,6 @@ btnLoop.addEventListener('click', () => {
   updateModeButtons();
 });
 
-// Eventos para actualizar los botones al reproducir/pausar
-audio.addEventListener('play', updatePlayPauseButton);
-audio.addEventListener('pause', updatePlayPauseButton);
-
 
 // Control del Slider de Volumen
 volumeSlider.addEventListener('input', () => {
@@ -300,12 +353,17 @@ volumeSlider.addEventListener('input', () => {
 window.addEventListener('keydown', (e) => {
   if (document.activeElement && ['INPUT','TEXTAREA', 'RANGE'].includes(document.activeElement.tagName)) return;
 
-  if (e.code === 'Space') {
+  // Atajos de teclado (Línea 313 en adelante)
+if (e.code === 'Space') {
     e.preventDefault();
-    if (audio.src) { // Asegura que haya una canción cargada antes de pausar/reproducir
-      if (audio.paused) audio.play(); else audio.pause();
+    if (audio.paused) {
+        audio.play().catch(error => { /* ... */ });
+    } else {
+        audio.pause();
     }
-  }
+    // ¡NO PONER updatePlayPauseButton() AQUÍ TAMPOCO!
+    // updatePlayPauseButton(); // COMENTAR O ELIMINAR ESTA LÍNEA
+}
   if (e.code === 'ArrowRight') {
     e.preventDefault();
     playNextSong();
