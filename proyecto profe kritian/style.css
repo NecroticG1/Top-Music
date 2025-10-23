@@ -1,9 +1,304 @@
-.card img {
-    height: 200px;
-    object-fit: cover;
+/* Variables de Colores */
+:root {
+  --primary-color: #8E2DE2; /* Un morado vibrante */
+  --secondary-color: #4A00E0; /* Un azul-violeta oscuro */
+  --accent-color: #f0e6df; /* Naranja brillante para acentos */
+  --text-light: #e9e9e9;
+  --text-dark: #1a1a1a;
+  --bg-dark: #121212; /* Fondo casi negro */
+  --bg-secondary-dark: #1e1e1e; /* Un poco más claro para cards */
+  --gradient-main: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  --gradient-btn-primary: linear-gradient(45deg, #FF5722, lch(62.31% 90.08 52.36)); /* Degradado para botones principales */
+  --gradient-btn-active: linear-gradient(45deg, var(--primary-color), var(--secondary-color)); /* Degradado para botones activos */
+}
+
+/* Tipografía */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--text-light);
+}
+
+.navbar .container-fluid {
+    display: flex;
+    justify-content: center; /* Centra horizontalmente el contenido de la nav-bar */
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Contenedor principal del reproductor */
+.main-player {
+  background: var(--gradient-main); /* Degradado de fondo */
+  color: white;
+  padding: 2.5rem;
+}
+
+.album-cover-container {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 1.5rem auto;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.album-cover-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out;
+}
+
+.album-cover-container img:hover {
+  transform: scale(1.05); /* Pequeña animación al pasar el ratón */
+}
+
+#current-title {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+#current-artist {
+  font-size: 1rem;
+  color: var(--text-light);
+  opacity: 0.7;
+}
+
+/* Estilos de botones generales */
+.btn {
+  border-radius: 50px;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
+  min-height: 48px;
+  background-color: #000; /* Negro por defecto */
+  color: var(--text-light);
+  border: none;
+}
+
+/* Botón principal de Play/Pause */
+.btn-lg {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  font-size: 2.2rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #21002b; /* Negro */
+  border: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  color: white;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-lg:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  background-color: #111; /* Un poco más claro al pasar el ratón */
+}
+
+.btn-lg:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 10px #21002b brgba(0, 0, 0, 0.2);
+  background-color: #222;
+}
+
+/* Controles extra (Prev, Next, Shuffle, Loop) */
+.extra-controls button {
+  min-width: 50px;
+  min-height: 50px;
+  border-radius: 50%;
+  background-color: #55009b; /* Negro sólido */
+  border: none;
+  color: var(--text-light);
+  font-size: 1.4rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.extra-controls button:hover {
+  background-color: #21002b; /* Sutil brillo al pasar el ratón */
+  transform: translateY(-2px);
+}
+
+.extra-controls button.active {
+  background-color: #21002b; /* Ligeramente distinto cuando está activo */
+  color: white;
+}
+/* Barra de Progreso */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.progress-bar {
+  -webkit-appearance: none; /* Quitar estilo nativo en WebKit */
+  appearance: none;
+  width: 100%;
+  height: 8px; /* Altura de la barra */
+  background: rgba(255, 255, 255, 0.2); /* Fondo de la barra */
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.2s ease;
+}
+
+.progress-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px; /* Tamaño del "pulgar" */
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent-color); /* Color del pulgar */
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.progress-bar::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  border: none;
+}
+
+.time-indicator {
+  font-size: 0.9rem;
+  min-width: 90px;
+  text-align: right;
+  color: var(--text-light);
+  opacity: 0.8;
+}
+
+/* Control de Volumen */
+.volume-container {
+  display: flex;
+  align-items: center;
+  max-width: 280px;
+  margin: 20px auto 0 auto;
+  gap: 10px;
+}
+
+.volume-container span {
+  font-size: 1.2rem;
+  color: var(--text-light);
+  opacity: 0.8;
+}
+
+#volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  cursor: pointer;
+  outline: none;
+}
+
+#volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--text-light); /* Color del pulgar del volumen */
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+#volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--text-light);
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  border: none;
+}
+
+/* Tarjetas de Canciones */
+.song-card {
+  background-color: var(--bg-secondary-dark);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.song-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.song-card img {
+  height: 150px;
+  object-fit: cover;
+}
+
+.song-card .btn-play {
+  background: var(--gradient-btn-primary); /* Mantiene el degradado original */
+  border: none;
+  color: white;
+  width: 100%;
+  border-radius: 5px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.song-card .btn-play:hover {
+  background: var(--gradient-btn-active);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Mejorar el indicador de enfoque (Focus) para accesibilidad */
+:focus-visible {
+  outline: 3px solid var(--accent-color); /* Color de foco claro y visible */
+  outline-offset: 3px;
+  border-radius: 5px; /* Bordes redondeados para el foco */
+}
+
+/* Utilidad para degradados de Bootstrap */
+.bg-gradient-dark {
+  background: var(--gradient-main) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .main-player {
+    padding: 1.5rem;
   }
-  
-  .btn-play {
-    width: 100%;
+  #current-title {
+    font-size: 1.5rem;
   }
-  
+  .btn-lg {
+    width: 60px;
+    height: 60px;
+    font-size: 1.8rem;
+  }
+  .extra-controls button {
+    min-width: 45px;
+    min-height: 45px;
+    font-size: 1.2rem;
+  }
+  .volume-container {
+    max-width: 200px;
+  }
+}
