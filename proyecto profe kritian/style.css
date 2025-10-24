@@ -1,4 +1,3 @@
-/* Variables de Colores */
 :root {
   --primary-color: #8E2DE2; /* Un morado vibrante */
   --secondary-color: #4A00E0; /* Un azul-violeta oscuro */
@@ -12,7 +11,6 @@
   --gradient-btn-active: linear-gradient(45deg, var(--primary-color), var(--secondary-color)); /* Degradado para botones activos */
 }
 
-/* Tipografía */
 body {
   font-family: 'Poppins', sans-serif;
   background-color: var(--bg-dark);
@@ -29,7 +27,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .navbar .container-fluid {
     display: flex;
-    justify-content: center; /* Centra horizontalmente el contenido de la nav-bar */
+    justify-content: center; 
     padding-left: 0;
     padding-right: 0;
 }
@@ -109,7 +107,7 @@ h1, h2, h3, h4, h5, h6 {
 .btn-lg:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-  background-color: #111; /* Un poco más claro al pasar el ratón */
+  background-color: #111; 
 }
 
 .btn-lg:active {
@@ -151,7 +149,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .progress-bar {
-  -webkit-appearance: none; /* Quitar estilo nativo en WebKit */
+  -webkit-appearance: none;
   appearance: none;
   width: 100%;
   height: 8px; /* Altura de la barra */
@@ -165,10 +163,10 @@ h1, h2, h3, h4, h5, h6 {
 .progress-bar::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px; /* Tamaño del "pulgar" */
+  width: 20px; 
   height: 20px;
   border-radius: 50%;
-  background: var(--accent-color); /* Color del pulgar */
+  background: var(--accent-color); 
   cursor: pointer;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
@@ -223,7 +221,7 @@ h1, h2, h3, h4, h5, h6 {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: var(--text-light); /* Color del pulgar del volumen */
+  background: var(--text-light);
   cursor: pointer;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
@@ -280,7 +278,6 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--gradient-main) !important;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .main-player {
     padding: 1.5rem;

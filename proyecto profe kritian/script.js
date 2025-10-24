@@ -1,10 +1,8 @@
-// script.js — Reproductor atractivo con reproducción automática, siguiente/anterior, aleatorio, repetición y barra de progreso
-
 const audio = document.getElementById('main-audio');
 const mainSource = document.getElementById('main-source');
 const currentTitle = document.getElementById('current-title');
-const currentArtist = document.getElementById('current-artist'); // Nuevo elemento para el artista
-const currentCover = document.getElementById('current-cover'); // Nuevo elemento para la portada
+const currentArtist = document.getElementById('current-artist'); 
+const currentCover = document.getElementById('current-cover'); 
 
 const playButtons = Array.from(document.querySelectorAll('.btn-play'));
 const mainPlayerCard = document.querySelector('.main-player .card-body');
@@ -13,35 +11,29 @@ let currentSrc = '';
 let currentIndex = -1;
 let shuffleMode = false;
 let loopMode = false;
-let songsData = []; // Para almacenar los datos de las canciones cargadas
+let songsData = []; 
 
-// --- CREACIÓN DINÁMICA DE CONTROLES ---
-
-// Contenedor principal de controles (Play/Pause y volumen)
 const mainControlsContainer = document.createElement('div');
 mainControlsContainer.classList.add('d-flex', 'justify-content-center', 'align-items-center', 'my-3');
 
-// Botón principal de Play/Pause (Mejora UX/UI)
+
 const btnPlayPause = document.createElement('button');
 btnPlayPause.innerHTML = '▶️';
 btnPlayPause.classList.add('btn', 'btn-lg');
 btnPlayPause.setAttribute('aria-label', 'Reproducir/Pausar (Atajo: Barra Espaciadora)');
 mainControlsContainer.appendChild(btnPlayPause);
 
-// Contenedor de Controles Adicionales
 const extraControlsContainer = document.createElement('div');
 extraControlsContainer.classList.add('extra-controls');
 extraControlsContainer.setAttribute('role', 'toolbar');
 extraControlsContainer.setAttribute('aria-label', 'Controles Secundarios de Reproducción');
 
-// Botón Anterior (A11y: aria-label)
 const btnPrev = document.createElement('button');
 btnPrev.innerHTML = '⏮️';
 btnPrev.classList.add('btn');
 btnPrev.setAttribute('aria-label', 'Canción Anterior (Atajo: Flecha Izquierda)');
 extraControlsContainer.appendChild(btnPrev);
 
-// Botón Aleatorio (A11y: role="switch" y aria-pressed)
 const btnShuffle = document.createElement('button');
 btnShuffle.innerHTML = '🔀';
 btnShuffle.classList.add('btn');
@@ -49,14 +41,12 @@ btnShuffle.setAttribute('aria-label', 'Modo Aleatorio (Atajo: S)');
 btnShuffle.setAttribute('aria-pressed', 'false');
 extraControlsContainer.appendChild(btnShuffle);
 
-// Botón Siguiente (A11y: aria-label)
 const btnNext = document.createElement('button');
 btnNext.innerHTML = '⏭️';
 btnNext.classList.add('btn');
 btnNext.setAttribute('aria-label', 'Siguiente Canción (Atajo: Flecha Derecha)');
 extraControlsContainer.appendChild(btnNext);
 
-// Botón Repetir (A11y: role="switch" y aria-pressed)
 const btnLoop = document.createElement('button');
 btnLoop.innerHTML = '🔁';
 btnLoop.classList.add('btn');
@@ -64,7 +54,6 @@ btnLoop.setAttribute('aria-label', 'Modo Repetir (Atajo: L)');
 btnLoop.setAttribute('aria-pressed', 'false');
 extraControlsContainer.appendChild(btnLoop);
 
-// Contenedor de Progreso y Tiempo
 const progressContainer = document.createElement('div');
 progressContainer.classList.add('progress-container');
 progressContainer.setAttribute('role', 'group');
@@ -87,15 +76,13 @@ progressBar.setAttribute('aria-valuenow', '0');
 progressBar.setAttribute('aria-label', 'Posición de reproducción');
 progressContainer.append(progressBar, timeIndicator);
 
-
-// Contenedor de Volumen
 const volumeContainer = document.createElement('div');
 volumeContainer.classList.add('volume-container');
 volumeContainer.setAttribute('role', 'group');
 volumeContainer.setAttribute('aria-label', 'Control de Volumen');
 
 const volumeIconLow = document.createElement('span');
-volumeIconLow.innerHTML = '🔇'; // Ícono de volumen bajo
+volumeIconLow.innerHTML = '🔇';
 const volumeSlider = document.createElement('input');
 volumeSlider.type = 'range';
 volumeSlider.id = 'volume-slider';
@@ -108,21 +95,15 @@ volumeSlider.setAttribute('aria-valuemax', '100');
 volumeSlider.setAttribute('aria-valuenow', '100');
 volumeSlider.setAttribute('aria-label', 'Ajustar Volumen');
 const volumeIconHigh = document.createElement('span');
-volumeIconHigh.innerHTML = '🔊'; // Ícono de volumen alto
+volumeIconHigh.innerHTML = '🔊'; 
 
 volumeContainer.append(volumeIconLow, volumeSlider, volumeIconHigh);
 
-
-// Insertar todos los controles en el DOM
-mainPlayerCard.appendChild(mainControlsContainer); // Para el botón principal de Play/Pause
+mainPlayerCard.appendChild(mainControlsContainer);
 mainPlayerCard.appendChild(extraControlsContainer);
 mainPlayerCard.appendChild(progressContainer);
 mainPlayerCard.appendChild(volumeContainer);
 
-
-// --- LÓGICA DEL REPRODUCTOR ---
-
-// Almacenar datos de las canciones desde los botones del HTML
 playButtons.forEach((button, index) => {
   songsData.push({
     title: button.getAttribute('data-title'),
@@ -132,11 +113,9 @@ playButtons.forEach((button, index) => {
   });
 });
 
-// Inicializar el volumen al valor del slider (100% por defecto)
 audio.volume = volumeSlider.value / 100;
 updateVolumeIcon();
 
-// Función para actualizar el estado del botón Play/Pause
 function updatePlayPauseButton() {
   if (audio.paused) {
     btnPlayPause.innerHTML = '▶️';
@@ -147,7 +126,6 @@ function updatePlayPauseButton() {
   }
 }
 
-// Función para actualizar los estados de los botones de modo (Feedback Visual y A11y)
 function updateModeButtons() {
   btnShuffle.classList.toggle('active', shuffleMode);
   btnShuffle.setAttribute('aria-pressed', shuffleMode ? 'true' : 'false');
@@ -158,7 +136,6 @@ function updateModeButtons() {
   btnLoop.setAttribute('aria-label', loopMode ? 'Modo Repetir ACTIVADO (Atajo: L)' : 'Modo Repetir DESACTIVADO (Atajo: L)');
 }
 
-// Función para actualizar el ícono de volumen (Mejora UX)
 function updateVolumeIcon() {
   if (audio.volume === 0) {
     volumeIconLow.innerHTML = ' mute ';
@@ -169,7 +146,6 @@ function updateVolumeIcon() {
   }
 }
 
-// Función para cargar y reproducir una canción
 function loadAndPlay(src, title, artist, cover, index) {
     if (currentSrc !== src) {
         mainSource.src = src;
@@ -181,17 +157,11 @@ function loadAndPlay(src, title, artist, cover, index) {
         currentCover.src = cover;
     }
     
-    // Llama a play()...
     audio.play().catch(e => {
         console.error("Error de reproducción en loadAndPlay:", e);
     });
-    
-    // ...PERO ELIMINA LA LLAMADA MANUAL A updatePlayPauseButton() de aquí:
-    // updatePlayPauseButton(); // <-- COMENTAR O ELIMINAR ESTA LÍNEA
 }
 
-
-// Inicializar botones y añadir event listeners a las tarjetas de canciones
 playButtons.forEach((button, index) => {
   button.addEventListener('click', () => {
     const song = songsData[index];
@@ -199,10 +169,9 @@ playButtons.forEach((button, index) => {
   });
 });
 
-// Reproducción automática y lógica de modos
 audio.addEventListener('ended', () => {
   if (loopMode) {
-    // Si loopMode está activo, el atributo audio.loop lo gestiona.
+
     audio.play(); 
   } else if (shuffleMode) {
     playRandomSong();
@@ -211,7 +180,6 @@ audio.addEventListener('ended', () => {
   }
 });
 
-// Manejo de la barra de progreso (timeupdate)
 audio.addEventListener('timeupdate', () => {
   const value = (audio.currentTime / audio.duration) * 100;
   progressBar.value = isNaN(value) ? 0 : value;
@@ -226,14 +194,12 @@ audio.addEventListener('timeupdate', () => {
   timeIndicator.innerText = `${currentMin}:${currentSec} / ${isNaN(audio.duration) ? '0:00' : durationMin + ':' + durationSec}`;
 });
 
-// Permitir saltar a una posición en la barra de progreso
 progressBar.addEventListener('input', () => {
   const time = (progressBar.value * audio.duration) / 100;
   audio.currentTime = time;
 });
 
 
-// Función para reproducir la siguiente canción
 function playNextSong() {
   if (songsData.length === 0) return;
 
@@ -247,7 +213,6 @@ function playNextSong() {
   loadAndPlay(nextSong.src, nextSong.title, nextSong.artist, nextSong.cover, nextIndex);
 }
 
-// Función para reproducir la canción anterior
 function playPrevSong() {
   if (songsData.length === 0) return;
 
@@ -256,7 +221,6 @@ function playPrevSong() {
   loadAndPlay(prevSong.src, prevSong.title, prevSong.artist, prevSong.cover, prevIndex);
 }
 
-// Función para reproducir una canción al azar
 function playRandomSong() {
   if (songsData.length === 0) return;
   let randomIndex;
@@ -268,13 +232,11 @@ function playRandomSong() {
   loadAndPlay(randomSong.src, randomSong.title, randomSong.artist, randomSong.cover, randomIndex);
 }
 
-// Eventos de los botones de control
 btnPlayPause.type = 'button';
 btnPlayPause.style.zIndex = '1000';
 
-// Función que alterna reproducir/pausar (la usamos en varios handlers)
 function togglePlayPause() {
-    if (!audio.src) return; // No hay audio cargado → no hace nada
+    if (!audio.src) return; 
 
     if (audio.paused) {
         audio.play().catch(err => console.error('[ERROR] Reproducir:', err));
@@ -283,8 +245,6 @@ function togglePlayPause() {
     }
 }
 
-
-// Actualizar el botón principal Play/Pause según el estado del audio
 function updatePlayPauseButton() {
     if (audio.paused) {
         btnPlayPause.innerHTML = '▶️';
@@ -295,19 +255,13 @@ function updatePlayPauseButton() {
     }
 }
 
-// ------------------------
-// LISTENERS
-// ------------------------
-
-// Click en el botón Play/Pause
 btnPlayPause.addEventListener('click', (e) => {
     e.stopPropagation();
     togglePlayPause();
 });
 
-// Barra espaciadora para reproducir/pausar
 window.addEventListener('keydown', (e) => {
-    // Evitar que afecte a inputs, sliders, textarea
+ 
     if (['INPUT','TEXTAREA','RANGE'].includes(document.activeElement.tagName)) return;
 
     if (e.code === 'Space') {
@@ -316,7 +270,6 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
-// Actualizar botón cuando cambie el estado del audio
 audio.addEventListener('play', updatePlayPauseButton);
 audio.addEventListener('pause', updatePlayPauseButton);
 
@@ -340,7 +293,6 @@ btnLoop.addEventListener('click', () => {
   updateModeButtons();
 });
 
-
 // Control del Slider de Volumen
 volumeSlider.addEventListener('input', () => {
   audio.volume = volumeSlider.value / 100;
@@ -348,21 +300,16 @@ volumeSlider.addEventListener('input', () => {
   updateVolumeIcon();
 });
 
-
-// Atajos de teclado (mejoras de A11y y UX)
 window.addEventListener('keydown', (e) => {
   if (document.activeElement && ['INPUT','TEXTAREA', 'RANGE'].includes(document.activeElement.tagName)) return;
 
-  // Atajos de teclado (Línea 313 en adelante)
 if (e.code === 'Space') {
     e.preventDefault();
     if (audio.paused) {
-        audio.play().catch(error => { /* ... */ });
+        audio.play().catch(error => {});
     } else {
         audio.pause();
     }
-    // ¡NO PONER updatePlayPauseButton() AQUÍ TAMPOCO!
-    // updatePlayPauseButton(); // COMENTAR O ELIMINAR ESTA LÍNEA
 }
   if (e.code === 'ArrowRight') {
     e.preventDefault();
