@@ -1,3 +1,14 @@
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement(
+    {
+      pageLanguage: 'es',
+      includedLanguages: 'es,en,fr,it,de,pt', 
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    },
+    'google_translate_element'
+  );
+}
+
 const audio = document.getElementById('main-audio');
 const mainSource = document.getElementById('main-source');
 const currentTitle = document.getElementById('current-title');
